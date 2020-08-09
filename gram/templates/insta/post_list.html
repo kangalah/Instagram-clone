@@ -10,9 +10,12 @@
                 <div class="post_info">
                     <div class="post_name">{{post.author}}</div>
                 </div>
+                <div class="post_options"><i class="fas fa-ellipsis-h"></i></div>
             </div>
             <div class="post_image">
-                <img src="https://images.pexels.com/photos/2674052/pexels-photo-2674052.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500">
+                {% if post.image %}
+                    <img src="{{post.image.url}}" alt="image" >
+                {% endif %}
             </div>
             <div class="engage">
                 <a href=""><i class="far fa-heart"></i></a>
