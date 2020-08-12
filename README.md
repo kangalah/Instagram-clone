@@ -5,7 +5,7 @@
 This a web appication that allows users to upload and display their images and other users can view all their photos and also view an extended version of an image.
 
 # Getting Started.
-Clonethis repository to your local machine and install all the extensions listed in the requirements.txt file.
+* Clone this repository to your local machine and install all the extensions listed in the requirements.txt file.
 
 # Prerequisites.
 * Python3
@@ -25,7 +25,7 @@ Clonethis repository to your local machine and install all the extensions listed
 # Running the tests.
 * To run the tests, run python manage.py test gram
 
-# Deployment.
+# Running the application
 * To open local server run python manage.py runserver.
 
 # link to the live site.
