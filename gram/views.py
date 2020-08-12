@@ -13,17 +13,6 @@ from django.views.generic import ListView,DetailView,CreateView,UpdateView,Delet
 
 @login_required(login_url='login')
 def index(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['your_name']
-            email = form.cleaned_data['email']
-
-            recipient = UserRegisterRecipients(name = name, email = email)
-            recipient.save()
-            send_welcome_email(name,email)
-
-            HttpResponseRedirect(index)
     current_user = request.user
     all_images = Image.objects.all()
     comments = Comment.objects.all()
@@ -33,7 +22,7 @@ def index(request):
     context = {
         'posts': Post.objects.all()
     }
-    return render(request,"insta/post_list.html" ,{"posts":posts, "letterForm":form})
+    return render(request,"insta/post_list.html" ,{"posts":posts})
 
 @login_required(login_url='login')
 def add_image(request):
