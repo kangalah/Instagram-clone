@@ -26,10 +26,10 @@
                 <a href=""><i class="far fa-bookmark"></i></a>
             </div>
             <div class="like">
-                <a href="#"</a>
+                <a href="#">24</a>
             </div>
             <div class="caption">
-                <a href="{% url 'profile' %}"><h2>{{post.caption}}</h2></a>
+                <a href="{% url 'post-detail' post.id %}"><h2>{{post.caption}}</h2></a>
                 <span><p>{{post.caption}}</p></span>
             </div>
             <div class="time_posted">
@@ -38,7 +38,7 @@
             <p>{{likes|length}} likes</p>
                 <p class=""> {{image.comment.count}} comments </p>
         
-            <div class="card-body ">
+            <div class="card-body "></div>
                 {% for comment in comments %}
                 {% if comment.image_id == image.id%}
                 <h5><strong>{{comment.comment_owner}}</strong> {{comment.comment}}</h5>
@@ -46,16 +46,49 @@
         
                 {% endif %}
                 {% endfor %}
-            </div>
-            </div>
-    {% endfor %}
 
-
+ 
+        <form action="{% url 'profile' %}" method="POST">
+            {% csrf_token %}
+            <i ><button class="far fa-heart btn btn-danger" type="submit", name="post_id", value="{{ post.id }}", class="btn btn-danger btn-sm">Like</button> </i>
+            <a href="{% url 'index' %}"><i class="far fa-comment"></i></a>
+        </form>
+       
+    
+    <div class="container">
+        <p class="text float-left" style="font-weight: bold;font-size: 15px;"> {{ post.author }} </p>
+        <p class="text float-left"> {{ post.caption }} </p><br>
         
-        <h5><strong>{{image.profile.username}}</strong> {{image.caption}}</h5>
-
     </div>
+    
+        <h4 class="text">Comments</h4>
+        {% if not post.comments.all %}
+            Be the first to comment on this post <a href="{% url 'profile' %}">
+                Comment...
+            </a>
+        
+        {% else %}
+            
+            {%for comment in post.comments.all%}
+                <strong>
+                    {{ comment.name}} 
 
+                </strong>
+                <br/>
+                
+                {{ comment.body}}
+                <p>{{ comment.created_date }}</p>
+            
+            {% endfor %}
+                <br>
+                <a href="{% url 'profile' post.id %}">Add comment..</a>
 
-        </div>
+        {% endif%}
+     <br>
+    <div>
+        <small class="text-muted float-left">{{post.date_posted}}</small>    
+    </div>
+<hr>
+</div>
+{% endfor %}
 {% endblock %}

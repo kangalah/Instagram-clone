@@ -2,7 +2,7 @@ body{
     background-color: #ffff;
 }
 header{
-    background-color: rgb(218, 210, 210);
+    background-color: rgb(238, 231, 231);
     border-bottom: 1px solid #ccc;
     position: fixed;
     left: 0;
@@ -31,7 +31,7 @@ header{
     padding-left: 10px;
 }
 .v1{
-    border-left: 1.5px solid #111;
+    border-left: 1.5px solid rgb(212, 137, 137);
     height: 30px;
     margin-left: 20px;
 }
@@ -48,7 +48,7 @@ header{
 .search_bar{
     display: flex;
     width: 20%;
-    /* position: absolute; */
+    position: absolute;
     justify-content: center;
     border-radius: 3px;
     color: #999;
@@ -56,8 +56,8 @@ header{
     cursor: text;
 }
 .search_bar a{
-    font-size: 25px;
-    padding-left: 15px;
+    
+    padding-left: 2.375rem;
 } 
 /* .has-search .form-control {
     padding-left: 2.375rem;
