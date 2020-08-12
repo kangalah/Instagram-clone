@@ -27,13 +27,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+UPLOADCARE = {
+    'pub_key':'cdcde9d88fea3c0d203e',
+    'secret':'8b3cceb6c375319683f6',
+}
 
 # Application definition
 
 INSTALLED_APPS = [
     'gram',
     'user',
+    'crispy_forms',
+    'pyuploadcare.dj',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -127,3 +132,9 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = 'index'
+
+LOGIN_URL = 'login'

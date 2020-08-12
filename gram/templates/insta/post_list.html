@@ -5,18 +5,20 @@
         <div class="card">
             <div class="card_header">
                 <div class="profile_image">
-
+                    <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
                 </div>
                 <div class="post_info">
-                    <div class="post_name">{{post.author}}</div>
+                    <div class="post_name" href="#">{{post.author}}</div>
                 </div>
                 <div class="post_options"><i class="fas fa-ellipsis-h"></i></div>
             </div>
             <div class="post_image">
                 {% if post.image %}
-                    <img src="{{post.image.url}}" alt="image" >
+                    <a href="{% url 'profile' %}"><img src="{{post.image.url}}" class="img-responsive d-block img-thumbnail" alt="Image" ></a>  
                 {% endif %}
-            </div>
+                </div>
+            
+            
             <div class="engage">
                 <a href=""><i class="far fa-heart"></i></a>
                 <a href=""><i class="far fa-comment"></i></a>
@@ -24,15 +26,36 @@
                 <a href=""><i class="far fa-bookmark"></i></a>
             </div>
             <div class="like">
-                <a href="">24</a>
+                <a href="#"</a>
             </div>
             <div class="caption">
-                <a href=""><h2>{{post.author}}</h2></a>
+                <a href="{% url 'profile' %}"><h2>{{post.caption}}</h2></a>
                 <span><p>{{post.caption}}</p></span>
             </div>
             <div class="time_posted">
                 {{ post.created_date | timesince }} ago
             </div>
-        </div>
+            <p>{{likes|length}} likes</p>
+                <p class=""> {{image.comment.count}} comments </p>
+        
+            <div class="card-body ">
+                {% for comment in comments %}
+                {% if comment.image_id == image.id%}
+                <h5><strong>{{comment.comment_owner}}</strong> {{comment.comment}}</h5>
+                <hr>
+        
+                {% endif %}
+                {% endfor %}
+            </div>
+            </div>
     {% endfor %}
+
+
+        
+        <h5><strong>{{image.profile.username}}</strong> {{image.caption}}</h5>
+
+    </div>
+
+
+        </div>
 {% endblock %}

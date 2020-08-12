@@ -1,22 +1,53 @@
 {% extends "insta/base.html" %}
 
 {% block content %}
+    {% for post in posts %}
         <div class="card">
             <div class="card_header">
                 <div class="profile_image">
                     <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
                 </div>
                 <div class="post_info">
-                    <div class="post_name">{{object.author}}</div>
+                    <div class="post_name" href="{% url 'user-posts' object.author.username %}">{{object.author}}</div>
                 </div>
                 <div class="post_options"><i class="fas fa-ellipsis-h"></i></div>
-            </div> 
-             <div class="caption">
+            </div>
+            <div class="post_image">
+                {% if post.image %}
+                    <img src="{{object.image.url}}" class="img-responsive d-block img-thumbnail" alt="Image" ></a>  
+                {% endif %}
+                </div>
+            
+            
+            <div class="engage">
+                <a href=""><i class="far fa-heart"></i></a>
+                <a href=""><i class="far fa-comment"></i></a>
+                <a href=""><i class="far fa-share-square"></i></a>
+                <a href=""><i class="far fa-bookmark"></i></a>
+            </div>
+            <div class="like">
+                <a href="">24</a>
+            </div><br>
+            <h2>Comments</h2>
+            <br>
+            {% if not post.comments.all() %}
+            No comments Yet...<a href="#">Add One</a>
+            {% else %}
+            {% for comment in post.comments.all %}
+            <strong>
+            {{ comment.name}}-{{ comment.date_created}}</strong>
+            <br/><br>
+            {{ comment.body }}
+            <br>
+            {% endfor %}
+            {% endif %}
+            <div class="caption">
                 <a href=""><h2>{{object.author}}</h2></a>
+                <span><p>{{object.caption}}</p></span>
             </div>
             <div class="time_posted">
                 {{ object.created_date | timesince }} ago
             </div>
-        </div>
-
+            </div>
+    {% endfor %}
 {% endblock %}
