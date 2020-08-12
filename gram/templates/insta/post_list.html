@@ -30,7 +30,6 @@
             </div>
             <div class="caption">
                 <a href="{% url 'post-detail' post.id %}"><h2>{{post.caption}}</h2></a>
-                <span><p>{{post.caption}}</p></span>
             </div>
             <div class="time_posted">
                 {{ post.created_date | timesince }} ago
