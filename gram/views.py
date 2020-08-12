@@ -4,13 +4,13 @@ from .models import Post
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .models import Image, Comment,likes
+from .models import Post, Comment
 from .forms import PostForm
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
 
 # Create your views here.
 
-@login_required
+@login_required(login_url='login')
 def index(request):
     current_user = request.user
     all_images = Image.objects.all()
