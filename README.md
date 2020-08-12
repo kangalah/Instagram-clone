@@ -33,7 +33,7 @@ Clonethis repository to your local machine and install all the extensions listed
 
 # Technologies used.
 * python language.
-* Django-1.11.5: python web Framework.
+* Django-1.11.29: python web Framework.
 
 ## License
 *MIT* Copyright (c) 2020 Joan Nanjala
