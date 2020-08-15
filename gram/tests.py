@@ -1,68 +1,76 @@
 from django.test import TestCase
+from .models import Profile, Image, User, Comments
 
-# Create your tests here.
-from django.test import TestCase
-from django.contrib.auth.models import User
-from .models import Post, Comment
-from user.models import Profile
 
-class PostTestClass(TestCase):
-    """test class for Post model"""
+class ProfileTest(TestCase):
 
     def setUp(self):
+        self.new_user = User(username='Titus', email='titusouko@gmail.com', password='1234')
+        self.new_user.save()
+        self.new_profile = Profile(photo='image.png', bio='generous', user=self.new_user)
 
-        self.user = User.objects.create_user("testuser", "secret")
+    def test_instance(self):
+        self.assertTrue(isinstance(self.new_profile, Profile))
 
-        self.new_profile = Profile(profile_pics="https://cdn.statically.io/img/wallpaperaccess.com/full/819472.jpg", owner=self.user)
-        self.new_profile.save()
-
-        self.new_image = Image(pic="https://cdn.statically.io/img/wallpaperaccess.com/full/819472.jpg",
-                               caption="image", profile=self.new_profile)
-
-    def test_instance_true(self):
-        self.new_image.save()
-        self.assertTrue(isinstance(self.new_post, Post))
-
-    def test_save_image_method(self):
-        self.new_post.save_post()
-        images = Post.objects.all()
-        self.assertTrue(len(posts) == 1)
-
-    def tearDown(self):
-        Post.objects.all().delete()
-        Profile.objects.all().delete()
-        User.objects.all().delete()
-
-class CommentTestClass(TestCase):
+    def test_save_method(self):
+        self.new_profile.save_profile()
+        profile = Profile.objects.all()
+        self.assertTrue(len(profile)>0)
     
-    """Test class for Comment Model"""
+    def test_delete_method(self):
+        self.new_profile.save_profile()
+        self.new_profile.delete_profile()
+        profile = Profile.objects.all()
+        self.assertTrue(len(profile)==0)
+
+    # def test_update_profile(self):
+    #     self.new_profile.save_profile()
+    #     self.new_profile.update_bio(self.new_profile.id,'mySelf')
+    #     updated_bio = Profile.objects.filter(bio="mySelf")
+    #     self.assertTrue(len(updated_bio)>0)
+
+class ImageTest(TestCase):
 
     def setUp(self):
-        self.new_user = User.objects.create_user("testuser", "secret")
-
-        self.new_profile = Profile(profile_pics='https://ucarecdn.com/620ac26e-19f7-4c0a-86d1-2b4e4b195fa8/-/crop/610x452/15,0/-/preview/',
-                                     bio="this is a test bio",
-                                     owner=self.new_user)
+        self.new_user = User(username='Titus', email='titusouko@gmail.com', password='1234')
+        self.new_user.save()
+        self.new_profile = Profile(photo='image.png', bio='generous', user=self.new_user)
         self.new_profile.save()
+        self.new_image = Image(name='Moringa', image='moringa.jpg', caption='wonderful place to be', profile=self.new_user, like_add=0)
 
-        self.new_image = Image(pic='https://ucarecdn.com/620ac26e-19f7-4c0a-86d1-2b4e4b195fa8/-/crop/610x452/15,0/-/preview/',
-                               caption="this is a test image", profile='',profile_details=self.new_user)
+    def test_instance(self):
+        self.assertTrue(isinstance(self.new_image,Image))
+
+    def test_save_image(self):
+        self.new_image.save_image()
+        image = Image.objects.all()
+        self.assertTrue(len(image)>0)
+
+    def test_delete_image(self):
+        self.new_image.save_image()
+        self.new_image.delete_image()
+        image = Image.objects.all()
+        self.assertTrue(len(image)==0)
+
+class CommentsTest(TestCase):
+
+    def setUp(self):
+        self.new_user = User(username='Titus', email='titusouko@gmail.com', password='1234')
+        self.new_user.save()
+        self.new_image = Image(name='Moringa', image='moringa.jpg', caption='wonderful place to be', profile=self.new_user, like_add=0)
         self.new_image.save()
+        self.new_comment = Comments(comment='This is a beautiful place',image=self.new_image,user=self.new_user)
 
-        self.new_comment = Comment(
-            image=self.new_image, comment_owner=self.new_profile, comment="this is a comment on a post")
-
-    def test_instance_true(self):
-        self.new_comment.save()
-        self.assertTrue(isinstance(self.new_comment, Comment))
+    def test_instance(self):
+        self.assertTrue(isinstance(self.new_comment, Comments))
 
     def test_save_comment(self):
         self.new_comment.save_comment()
-        comments = Comment.objects.all()
-        self.assertTrue(len(comments) == 1)
+        comment = Comments.objects.all()
+        self.assertTrue(len(comment)>0)
 
-    def tearDown(self):
-        Image.objects.all().delete()
-        Profile.objects.all().delete()
-        User.objects.all().delete()
-        Comment.objects.all().delete()
+    def test_delete_comment(self):
+        self.new_comment.save_comment()
+        self.new_comment.delete_comment()
+        comment = Comments.objects.all()
+        self.assertTrue(len(comment)==0)

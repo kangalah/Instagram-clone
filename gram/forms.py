@@ -1,13 +1,20 @@
 from django import forms
-from django.contrib.auth.models import User
-from .models import Post,Comment
+from .models import Profile,Image,Comments
 
-class PostForm(forms.ModelForm):
+
+class ProfileForm(forms.ModelForm):
     class Meta:
-        model = Post
-        fields = ('image', 'caption')
+        model = Profile
+        exclude=['user']
+
+
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        exclude =[ 'profile_details', 'like_add', 'vote_score', 'num_vote_up', 'num_vote_down',]
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = Comment
-        exclude = ['image', 'comment_owner']
+        model = Comments
+        exclude = ['image','user']

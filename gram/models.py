@@ -1,44 +1,106 @@
 from django.db import models
-from django.utils import timezone
+import datetime as dt
 from django.contrib.auth.models import User
-from pyuploadcare.dj.models import ImageField
-from django.urls import reverse
+from tinymce.models import HTMLField
+from vote.models import VoteModel
 
 
-
-
-
-class Post(models.Model):
-    title = models.CharField(max_length=100, null=True)
-    author = models.ForeignKey('auth.user', on_delete=models.CASCADE)
-    image = models.ImageField(blank=True, null=True, default=None)
-    caption = models.TextField()
-
-    
-
-    def has_related_object(self):
-        has_profile = False
-        try:
-            has_profile = (self.profile is not None)
-        except Profile.DoesNotExist:
-            pass
-        return has_profile and (self.post is not None)
-
-    created_date = models.DateTimeField(default=timezone.now)
+class Profile(models.Model):
+    photo = models.ImageField(upload_to='images', default=True)
+    bio = HTMLField(blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     def __str__(self):
-        return self.caption
+        return self.bio
 
-    def get_absolute_url(self):
-        return reverse('insta:post_detail',kwargs={'pk': self.pk})
+    def save_profile(self):
+        self.save()
 
-    def total_likes(self):
-        return self.likes.count()
+    def delete_profile(self):
+        self.delete()
 
-class Comment(models.Model):
-    image = models.ForeignKey(Post,blank=True, on_delete=models.CASCADE,related_name='comment', default=None, null=True)
-    comment_owner = models.ForeignKey(User, blank=True, default=None, null=True)
-    comment= models.TextField(null=True, default=None)
+    @classmethod
+    def update_bio(cls,id, bio):
+        update_profile = cls.objects.filter(id = id).update(bio = bio)
+        return update_profile
+
+    @classmethod
+    def get_all_profiles(cls):
+        profile = Profile.objects.all()
+        return profile
+    @classmethod
+    def search_user(cls,user):
+        return cls.objects.filter(user__username__icontains=user).all()
+
+
+class Image(VoteModel,models.Model):
+    name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='images/', default='text.png')
+    caption = models.CharField(max_length=200)
+    date_uploaded = models.DateTimeField(auto_now_add=True)
+    profile = models.ForeignKey(User, on_delete=models.CASCADE)
+    like_add = models.PositiveIntegerField(default=0)
+    
+    
+    def save_image(self):
+        self.save()
+
+    def delete_image(self):
+        self.delete()
+
+    @classmethod
+    def update_caption(self, caption):
+        update_cap = cls.objects.filter(id = id).update(caption = caption)
+        return update_cap
+
+    
+    @classmethod
+    def get_all_images(cls):
+        images = cls.objects.all()
+        return images
+
+    @classmethod
+    def get_image_by_id(cls,id):
+        image = cls.objects.filter(id= id).all()
+        return image
+
+    @classmethod
+    def search_by_profile(cls,name):
+        profile = Profile.objects.filter(user__name__icontains = name)
+
+    @classmethod
+    def get_one_image(cls,id):
+        image = cls.objects.get(pk=id)
+        return image
+
+
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-date_uploaded']
+        
+
+class Likes(models.Model):
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def save_likes(self):
+        self.save()
+
+    def delete_like(self):
+        self.delete()
+
+    def count_likes(self):
+        likes = self.likes.count()
+        return likes
+
+class Comments(models.Model):
+    comment = models.CharField(max_length = 50, blank=True)
+    posted = models.DateTimeField(auto_now_add=True)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def save_comment(self):
         self.save()
@@ -46,14 +108,19 @@ class Comment(models.Model):
     def delete_comment(self):
         self.delete()
 
+    # @classmethod
+    # def get_comments_by_images(self):
+    #     comments = Image.objects.filter(image_id = id )
+    #     return comments
+
     @classmethod
-    def get_image_comments(cls, id):
-        comments = Comment.objects.filter(image__pk=id)
+    def get_comments(cls,id):
+        comments = cls.objects.filter(image__id=id)
         return comments
 
-    def __str__(self):
-        return str(self.comment)
 
+    def __str__(self):
+        return self.comment
 
 
 

@@ -1,0 +1,27 @@
+{% extends 'registration/base.html' %}
+{% load bootstrap4 %}
+{% load staticfiles %}
+{% block content %}
+<div class="container">
+    <div class="row">
+             <div class="col-md-6" id="form">
+                <h4 class="text-center">Log In</h4>
+                <form action="/accounts/login/" method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Log In">
+                    </div>
+                    <div class="form-group">
+                            <p class="log forgot">You don't have an account? <a href="/accounts/register/">Sign Up</a></p>
+                        </div>
+                    <input type="hidden" name="next" value="{{next}}">
+                    <img src="https://www.instagram.com/static/images/appstore-install-badges/badge_ios_english-en.png/180ae7a0bcf7.png" width="200px" alt="Phone images">
+                </form>
+        </div>
+        <div class="col-md-6"></div>
+    </div>
+
+</div>
+​
+{% endblock %}

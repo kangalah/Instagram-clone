@@ -31,18 +31,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
-UPLOADCARE = {
-    'pub_key':'cdcde9d88fea3c0d203e',
-    'secret':'8b3cceb6c375319683f6',
-}
+
 
 # Application definition
 
 INSTALLED_APPS = [
     'gram',
-    'user',
-    'crispy_forms',
-    'pyuploadcare.dj',
+    'bootstrap4',
+    'tinymce',
+    'vote',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -67,7 +64,7 @@ ROOT_URLCONF = 'insta.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -92,10 +89,10 @@ if config('MODE')=="dev":
    DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-           'NAME': config('DB_NAME'),
-           'USER': config('DB_USER'),
-           'PASSWORD': config('DB_PASSWORD'),
-           'HOST': config('DB_HOST'),
+           'NAME': 'instagram',
+           'USER': 'moringa',
+           'PASSWORD': 'Access',
+           'HOST': '',
            'PORT': '',
        }
        

@@ -1,157 +1,120 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from django.http import HttpResponseRedirect, JsonResponse
-from .models import Post
-from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
-from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from .forms import ProfileForm,ImageForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from .models import Post, Comment
-from .forms import PostForm
-from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
+from django.contrib.auth.models import User
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from .models import Image, Profile,Comments,Likes
+from vote.managers import VotableManager
 
+votes=VotableManager()
 
-# Create your views here.
-
-@login_required(login_url='login')
+@login_required(login_url='/accounts/login/')
 def index(request):
     current_user = request.user
-    all_images = Image.objects.all()
-    comments = Comment.objects.all()
-    likes = Likes.objects.all
-    profile = Profile.objects.all()
-    print(likes)
-    context = {
-        'posts': Post.objects.all()
-    }
-    return render(request,"insta/post_list.html" ,{"posts":posts})
-
-@login_required(login_url='login')
-def add_image(request):
-    current_user = request.user
-    if request.method == 'POST':
-        form = ImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            add=form.save(commit=False)
-            add.profile = current_user
-            add.save()
-            return redirect('index')
-    else:
-        form = ImageForm()
-
-
-    return render(request,'image.html',locals())
-
-def search(request):
-    profiles = User.objects.all()
-
-    if 'username' in request.GET and request.GET['username']:
-        search_term = request.GET.get('username')
-        results = User.objects.filter(username__icontains=search_term)
-        print(results)
-        return redirect(index)
-
-        return render(request,'results.html',locals())
-
+    posts = Image.get_all_images()
+    comments = Comments.objects.all()
+    profile = Profile.get_all_profiles()
     
+    
+    return render(request, 'insta/index.html', locals())
+    
+@login_required(login_url='/accounts/login/')
+def add_image(request):
+        current_user = request.user
+        if request.method == 'POST':
+                form = ImageForm(request.POST, request.FILES)
+                if form.is_valid():
+                        add=form.save(commit=False)
+                        add.user = current_user
+                        add.save()
+                return redirect('index')
+        else:
+                form = ImageForm()
+                return render(request,'insta/image.html', {"form":form})
 
+@login_required(login_url='/accounts/login/')                
+def profile_info(request):
+        current_user = request.user
+        # follow = len(Follow.objects.followers(users))
+        # following = len(Follow.objects.following(users))
+        # people_following = Follow.objects.following(request.user)
+        profile = Profile.objects.filter(user=current_user).first()
+        posts = request.user.image_set.all()
+       
+        return render(request, 'insta/profile.html', {"images": posts, "profile": profile})
+@login_required(login_url='/accounts/login/') 
+def profile_update(request):
+         current_user = request.user
+         if request.method == 'POST':
+                form = ProfileForm(request.POST, request.FILES)
+                if form.is_valid():
+                        add=form.save(commit=False)
+                        add.user = current_user
+                        add.save()
+                return redirect('profile')
+         else:
+                form = ProfileForm()
+         return render(request,'insta/profile_update.html',{"form":form})
+
+@login_required(login_url='/accounts/login/') 
 def comment(request,image_id):
-    current_user=request.user
-    image = Image.objects.get(id=image_id)
-    profile_owner = User.objects.get(username=current_user)
-    comments = Comment.objects.all()
-    print(comments)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.image = image
-            comment.comment_owner = current_user
-            comment.save()
+        current_user=request.user
+        image = Image.objects.get(id=image_id)
+        profile_owner = User.objects.get(username=current_user.username)
+        comments = Comments.objects.all()
+        
+        if request.method == 'POST':
+                form = CommentForm(request.POST, request.FILES)
+                if form.is_valid():
+                        comment = form.save(commit=False)
+                        comment.image = image
+                        comment.user = request.user
+                        comment.save()
+            
+                       
+                return redirect('index')
+        else:
+                form = CommentForm()
+        return render(request, 'insta/comment.html',locals())
 
-            print(comments)
 
-
-        return redirect(index)
-
+@login_required(login_url='/accounts/login/')
+def search_results(request):
+    if 'username' in request.GET and request.GET["username"]:
+        search_term = request.GET.get("username")
+        searched_users = User.objects.filter(username__icontains = search_term)
+        message = f"{search_term}"
+        profile_pic = User.objects.all()
+        return render(request, 'insta/search.html', {'message':message, 'results':searched_users, 'profile_pic':profile_pic})
     else:
-        form = CommentForm()
+        message = "You haven't searched for any term"
+        return render(request, 'insta/search.html', {'message':message})
 
-    return render(request, 'comment.html', locals())
-
-def follow(request,user_id):
-    users=User.objects.get(id=user_id)
-    follow = Follow.objects.add_follower(request.user, users)
-
-    return redirect('/profile/', locals())
-
-def like(request, image_id):
-    current_user = request.user
-    image=Image.objects.get(id=image_id)
-    new_like,created= Likes.objects.get_or_create(liker=current_user, image=image)
-    new_like.save()
+def follow(request, user_id):
+    other_user = User.objects.get(id = user_id)
+    follow = Follow.objects.add_follower(request.user, other_user)
 
     return redirect('index')
 
-class PostListView(ListView):
-    model = Post
-    template_name = 'insta/post_list.html'
-    ordering = ['-created_date']
-    context_object_name = 'posts'
+def unfollow(request, user_id):
+    other_user = User.objects.get(id = user_id)
+    follow = Follow.objects.remove_follower(request.user, other_user)
 
-class UserPostListView(ListView):
-    model = Post
-    template_name = 'insta/user_posts.html'
-    context_object_name = 'posts'
+    return redirect('index')
 
-    def get_query_set(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return Post.objects.filter(author=user).order_by('-date_posted')
+@login_required(login_url='/accounts/register/')
+def like_images(request, id):
+        image = Image.get_one_image(id)
+        user = request.user
+        user_id = user.id
 
+        if user.is_authenticated:
+                uplike = image.votes.up(user_id)
+                image.like_add = image.votes.count()
+                image.save()
 
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'insta/post_detail.html'
-    context_object_name = 'posts'
-    
+        return redirect('index')
 
-class PostCreateView(LoginRequiredMixin,CreateView):
-    model = Post
-    fields = ['image','caption']
-    template_name = 'insta/post_form.html'
-    success_url = '/'
-    
-
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
-    model = Post
-    template_name = 'insta/post_form.html'
-    context_object_name = 'posts'
-    fields = ['caption']
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.author:
-            return True
-        return False
-   
-class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
-    model = Post
-    success_url = '/'
-    template_name = 'insta/post_detail.html'
-    context_object_name = 'posts'
-
-    def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.author:
-            return True
-        return False
     
     
 

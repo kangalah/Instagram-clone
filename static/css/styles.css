@@ -1,0 +1,105 @@
+.top-margin{
+    margin-top: 5em;
+}
+.signup-fields {
+    color: #262626;
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin-top: 12px;
+    max-width: 350px;
+}
+#register label{
+    display: none;
+}
+.form-text > ul{
+    display: none;
+}
+.text-muted{
+    display: none;
+}
+div.mylogo{
+    width: 50%;
+    
+    height: 80px;
+}
+img.mylogo{
+    margin-left: 60px;
+    width: 60%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+body{
+    background-color: rgb(236, 233, 233);
+}
+header{
+    background-color: rgb(229, 226, 226);
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+.card{
+    background-color: #fff;
+    margin: 0 auto;
+    width: 614px;
+    height: auto;
+    border: 0.8px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 60px;
+}
+.content_container{
+    background-color: #FAFAFA;
+    padding-top: 50px;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    top: 72px;
+}
+.card_header{
+    padding: 10px;
+}
+.post_image img{
+    width: 100%;
+    
+}
+.card_header a{
+    text-decoration: none;
+    color: black;
+}
+.fa-bookmark{
+    float: right;
+    margin-right: 35px;
+}
+.caption{
+    display: inline-block;
+    width: 100%;
+    padding: 0px 16px;
+}
+.search_bar{
+    display: flex;
+    width: 20%;
+    position: absolute;
+    justify-content: center;
+    border-radius: 3px;
+    color: rgb(248, 246, 246);
+    text-align: center;
+    cursor: text;
+}
+.caption a{
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: bold;
+    color: #000;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: -5px;
+}
