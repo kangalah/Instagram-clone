@@ -16,7 +16,7 @@ def index(request):
     profile = Profile.get_all_profiles()
     
     
-    return render(request, 'istagram/index.html', locals())
+    return render(request, 'insta/index.html', locals())
     
 @login_required(login_url='/accounts/login/')
 def add_image(request):
@@ -30,18 +30,15 @@ def add_image(request):
                 return redirect('index')
         else:
                 form = ImageForm()
-                return render(request,'istagram/image.html', {"form":form})
+                return render(request,'insta/image.html', {"form":form})
 
 @login_required(login_url='/accounts/login/')                
 def profile_info(request):
         current_user = request.user
-        # follow = len(Follow.objects.followers(users))
-        # following = len(Follow.objects.following(users))
-        # people_following = Follow.objects.following(request.user)
         profile = Profile.objects.filter(user=current_user).first()
         posts = request.user.image_set.all()
        
-        return render(request, 'istagram/profile.html', {"images": posts, "profile": profile})
+        return render(request, 'insta/profile.html', {"images": posts, "profile": profile})
 @login_required(login_url='/accounts/login/') 
 def profile_update(request):
          current_user = request.user
@@ -54,7 +51,7 @@ def profile_update(request):
                 return redirect('profile')
          else:
                 form = ProfileForm()
-         return render(request,'istagram/profile_update.html',{"form":form})
+         return render(request,'insta/profile_update.html',{"form":form})
 
 @login_required(login_url='/accounts/login/') 
 def comment(request,image_id):
@@ -75,27 +72,8 @@ def comment(request,image_id):
                 return redirect('index')
         else:
                 form = CommentForm()
-        return render(request, 'istagram/comment.html',locals())
+        return render(request, 'insta/comment.html',locals())
 
-# @login_required(login_url='/accounts/login/') 
-# def like(request, image_id):
-#     current_user = request.user
-#     image=Image.objects.get(id=image_id)
-#     new_like,created= Likes.objects.get_or_create(user=current_user, image=image)
-#     new_like.save()
-
-#     return redirect('index')
-
-# def like(request,image_id):
-#   image = Image.objects.get(pk = image_id)
-#   is_liked = False
-#   if image.likes.filter(id = request.user.id).exists():
-#       image.likes.remove(request.user)
-#       is_liked = False
-#   else:
-#       image.likes.add(request.user)
-#       is_liked = True
-#   return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required(login_url='/accounts/login/')
 def search_results(request):
@@ -104,10 +82,10 @@ def search_results(request):
         searched_users = User.objects.filter(username__icontains = search_term)
         message = f"{search_term}"
         profile_pic = User.objects.all()
-        return render(request, 'istagram/search.html', {'message':message, 'results':searched_users, 'profile_pic':profile_pic})
+        return render(request, 'insta/search.html', {'message':message, 'results':searched_users, 'profile_pic':profile_pic})
     else:
         message = "You haven't searched for any term"
-        return render(request, 'istagram/search.html', {'message':message})
+        return render(request, 'insta/search.html', {'message':message})
 
 def follow(request, user_id):
     other_user = User.objects.get(id = user_id)
@@ -133,3 +111,7 @@ def like_images(request, id):
                 image.save()
 
         return redirect('index')
+
+    
+    
+
