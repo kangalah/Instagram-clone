@@ -5,7 +5,7 @@ from .models import Profile, Image, User, Comments
 class ProfileTest(TestCase):
 
     def setUp(self):
-        self.new_user = User(username='Titus', email='titusouko@gmail.com', password='1234')
+        self.new_user = User(username='Titus', email='nyongesajoannanjala@gmail.com', password='qwerty123')
         self.new_user.save()
         self.new_profile = Profile(photo='image.png', bio='generous', user=self.new_user)
 
